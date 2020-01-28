@@ -9,34 +9,39 @@
 /* Purpose: This program takes one mandatory and two optional arguments. It        */
 /* creates an array of a specific size (otherwise the default) and sorts in        */
 /* ascending, descending, or random order. Finally, it sorts the array in          */
-/* ascending order (if not already sorted in ascending order) using selection      */
-/* sort mechanisms.                                                                */
+/* ascending order (if not already sorted in ascending order) using the selection  */
+/* sort mechanism.                                                                 */
 /***********************************************************************************/
 
 #include <iostream>
 #include <cstdlib>
 #include <string>
 #include <ctime>
+
 using namespace std;
 
+using std::cout;
+using std::cin;
+using std::endl;
+
 const int DEF_SIZE = 1000;
-const char DEF_ORDER = 'R', INSERT = 'I';
+const char DEF_ORDER = 'R';
 
 void error();
 void ascending(int n);
 void descending(int n);
 void random(int n);
-void chooseFunction(int n = DEF_SIZE, char s = DEF_ORDER, char g = 'I');
-void selectionSort(int arr[], int s);
+void chooseFunction(int n = DEF_SIZE, char s = DEF_ORDER);
+void selectionSort(int * p, int s);
 
 int main()
 {
-	char size_option, order_option, order, rerun;
+	char size_option, order_option, order;
 	string size = "";
 
-	int charToInt = 0;
 	cout << "Would you like to choose a size (Y/N)?" << endl;
 	cin >> size_option;
+	cout << endl;
 	if (size_option == 'Y') {
 		cout << "Enter the array size: " << endl;
 		cin >> size;
@@ -44,25 +49,29 @@ int main()
 		cout << endl;
 		cout << "Would you like to choose an order (Y/N)?" << endl;
 		cin >> order_option;
+		cout << endl;
 		if (order_option == 'Y') {
 			cout << "Enter sorting order: " << endl;
 			cin >> order;
-			chooseFunction(strToInt_Sz, order, 'I');
+			cout << endl;
+			chooseFunction(strToInt_Sz, order);
 		}
 		else {
-			chooseFunction(strToInt_Sz, DEF_ORDER, 'I');
+			chooseFunction(strToInt_Sz, DEF_ORDER);
 		}
 	}
 	else {
 		cout << "Would you like to choose an order (Y/N)?" << endl;
 		cin >> order_option;
+		cout << endl;
 		if (order_option == 'Y') {
 			cout << "Enter sorting order: " << endl;
 			cin >> order;
-			chooseFunction(DEF_SIZE, order, 'I');
+			cout << endl;
+			chooseFunction(DEF_SIZE, order);
 		}
 		else {
-			chooseFunction(DEF_SIZE, DEF_ORDER, 'I');
+			chooseFunction(DEF_SIZE, DEF_ORDER);
 		}
 	}
 }
@@ -71,27 +80,19 @@ void error() {
 	cout << "ERROR: Please enter a positive number!" << endl;
 }
 
-void reRun() {
-	char rerun;
-	cout << "Run again?" << endl;
-	cin >> rerun;
-	if (rerun == 'Y') {
-		main();
-	}
-}
-
 void ascending(int n) {
-	int * arr;
 	int size = 0;
+
 	if (n > 1) {
-		arr = new (nothrow) int[n];
+		int *array = new int[n];
 		for (int j = 0; j <= n - 1; j++) {
-			arr[j] = j;
-			cout << "a[" << j << "] = " << arr[j] << endl;
+			array[j] = j;
+			cout << "a[" << j << "] = " << array[j] << endl;
+			size = j + 1;
+
 		}
-		size = sizeof(arr);
 		cout << "Array Size: " << size << endl;
-		selectionSort(arr, size);
+		selectionSort(array, size);
 	}
 	else {
 		error();
@@ -99,19 +100,18 @@ void ascending(int n) {
 }
 
 void descending(int n) {
-	int * arr, size = 0;
+	int size = 0;
 
 	if (n > 1) {
-		arr = new (nothrow) int[n];
+		int *array = new int[n];
 		for (int j = 0; n - 1 >= 0; j++) {
 			n--;
-			arr[j] = n;
-			cout << "a[" << j << "] = " << arr[j] << endl;
-			selectionSort(arr, INSERT);
+			array[j] = n;
+			cout << "a[" << j << "] = " << array[j] << endl;
+			size = j + 1;
 		}
-		size = sizeof(arr);
 		cout << "Array Size: " << size << endl;
-		selectionSort(arr, size);
+		selectionSort(array, size);
 	}
 	else {
 		error();
@@ -119,48 +119,62 @@ void descending(int n) {
 }
 
 void random(int n) {
-	int * arr, size = 0;
+	int size = 0;
 
 	if (n > 1) {
-		arr = new (nothrow) int[n];
+		int *array = new int[n];
 		srand((unsigned)time(0));
 		for (int j = 0; n - 1 >= 0; j++) {
 			n--;
-			arr[j] = (rand() % 1000) + 1;
-			cout << "a[" << j << "] = " << arr[j] << endl;
-			selectionSort(arr, INSERT);
+			array[j] = (rand() % 1000) + 1;
+			cout << "a[" << j << "] = " << array[j] << endl;
+			size = j + 1;
 		}
-		size = sizeof(arr);
 		cout << "Array Size: " << size << endl;
-		selectionSort(arr, size);
+		selectionSort(array, size);
 	}
 	else {
 		error();
 	}
 }
 
-void chooseFunction(int n, char s, char g) {
-
+void chooseFunction(int n, char s) {
 	if (s) {
 		if (s == 'A') {
 			ascending(n);
-			reRun();
 		}
 		else if (s == 'D') {
 			descending(n);
-			reRun();
 		}
 		else {
 			random(n);
-			reRun();
 		}
 	}
 }
 
-void selectionSort(int arr[], int s) {
-	int key = 0;
-	for (int i = 2; i <= s; i++) {
-		key = arr[i];
+void selectionSort(int * p, int s) {
+	cout << endl << "Selection Sort" << endl; 
+	cout << "---------------------- - " << endl;
+	int * array = new int[s];
+	for (int i = 1; i <= s - 1; i++) {
+		int min = p[i - 1];
+		if (min > p[i]) {
+			min = p[i];
+			array[i - 1] = min;
+			array[i] = min;
+		}
+		if (min > p[i] && min > array[i]) {
+			array[i - 1] = min;
+			array[i] = min;
+			if (array[i - 1] > array[i]) {
+				array[i - 1] = array[i];
+				array[i] = array[i - 1];
+			}
+		}
+		else {
+			array[i] = p[i];
+		}
+		cout << "array[" << i - 1 << "] = " << array[i - 1] << endl;
 	}
 }
 
