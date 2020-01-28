@@ -25,55 +25,46 @@ using std::cin;
 using std::endl;
 
 const int DEF_SIZE = 1000;
-const char DEF_ORDER = 'R';
+const string DEF_ORDER = "R";
 
 void error();
 void ascending(int n);
 void descending(int n);
 void random(int n);
-void chooseFunction(int n = DEF_SIZE, char s = DEF_ORDER);
+void chooseFunction(int n = DEF_SIZE, string s = DEF_ORDER);
 void selectionSort(int * p, int s);
 void printArray(int * p, int s);
 
-int main()
+int main(int argc, char** argv)
 {
-	char size_option, order_option, order;
+	string order;
 	string size = "";
+	int strToInt_Sz = 0;
 
-	cout << "Would you like to choose a size (Y/N)?" << endl;
-	cin >> size_option;
-	cout << endl;
-	if (size_option == 'Y') {
-		cout << "Enter the array size: " << endl;
-		cin >> size;
-		int strToInt_Sz = stoi(size);
-		cout << endl;
-		cout << "Would you like to choose an order (Y/N)?" << endl;
-		cin >> order_option;
-		cout << endl;
-		if (order_option == 'Y') {
-			cout << "Enter sorting order: " << endl;
-			cin >> order;
-			cout << endl;
-			chooseFunction(strToInt_Sz, order);
-		}
-		else {
+	if (argc == 3) {
+
+		cin >> argv[1];
+		size = argv[1];
+		strToInt_Sz = stoi(size);
+		cin >> argv[2];
+		order = *argv[2];
+		chooseFunction(strToInt_Sz, order);
+	}
+	else if (argc == 2) {
+		cin >> argv[1];
+		if ((int)*argv[1]) {
+			size = argv[1];
+			strToInt_Sz = stoi(size);
 			chooseFunction(strToInt_Sz, DEF_ORDER);
 		}
-	}
-	else {
-		cout << "Would you like to choose an order (Y/N)?" << endl;
-		cin >> order_option;
-		cout << endl;
-		if (order_option == 'Y') {
-			cout << "Enter sorting order: " << endl;
-			cin >> order;
+		else {
+			order = argv[1];
 			cout << endl;
 			chooseFunction(DEF_SIZE, order);
 		}
-		else {
-			chooseFunction(DEF_SIZE, DEF_ORDER);
-		}
+	}
+	else {
+		chooseFunction(DEF_SIZE, DEF_ORDER);
 	}
 }
 
@@ -139,61 +130,19 @@ void random(int n) {
 	}
 }
 
-void chooseFunction(int n, char s) {
-	if (s) {
-		if (s == 'A') {
-			ascending(n);
-		}
-		else if (s == 'D') {
-			descending(n);
-		}
-		else {
-			random(n);
-		}
-	}
-}
+void chooseFunction(int n, string s) {
 
-//void selectionSort(int * p, int s) {
-//
-//	int loop;
-//	cout << endl << "Selection Sort" << endl;
-//	cout << "---------------------- - " << endl;
-//	int min = p[0];
-//	int replaced = 0;
-//
-//	for (int j = 0; j <= s - 1; j++) {
-//		if (min > p[j]) {
-//			replaced = min;
-//			min = p[j];
-//			p[j] = replaced;
-//		}
-//	}
-//
-//	int * arr = new int[s];
-//	p[0] = min;
-//	min = p[0];
-//	loop = 0;
-//
-//	while (1) {
-//		for (int i = 1; i <= s - 1; i++) {
-//			if (min > p[i]) {
-//				int previous = min;
-//				min = p[i];
-//				p[i] = previous;
-//				loop = 1;
-//			} /*if (p[i - 1] > p[i]) {
-//				int next = p[i - 1];
-//				p[i - 1] = p[i];
-//				p[i] = next;
-//				loop;				
-//			}*/
-//		}
-//		if (loop == 0) {
-//			break;
-//		}
-//	}
-//	printArray(p, s);
-//}
+	if (s.compare("A") == 0) {
+		ascending(n);
+	}
+	else if (s.compare("D") == 0) {
+		descending(n);
+	}
+	else {
+		random(n);
+	}
+
+}
 
 void selectionSort(int * p, int s) {
 
@@ -205,7 +154,7 @@ void selectionSort(int * p, int s) {
 	for (int j = 0; j < s - 1; j++) {
 		if (min > p[j]) {
 			replaced = min;
-		    min = p[j];
+			min = p[j];
 			p[j] = replaced;
 		}
 	}
@@ -220,7 +169,7 @@ void selectionSort(int * p, int s) {
 				p[i] = next;
 				loop = 1;
 			}
-			if (p[i-1] == p[i]) {
+			if (p[i - 1] == p[i]) {
 				continue;
 			}
 		}
@@ -230,20 +179,10 @@ void selectionSort(int * p, int s) {
 	}
 	printArray(p, s);
 }
- 
+
 void printArray(int * p, int s) {
 	for (int o = 0; o < s; o++) {
 		cout << "a[" << o << "] = " << p[o] << endl;
 	}
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
