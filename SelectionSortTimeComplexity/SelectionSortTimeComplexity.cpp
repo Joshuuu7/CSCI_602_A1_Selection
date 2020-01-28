@@ -33,6 +33,7 @@ void descending(int n);
 void random(int n);
 void chooseFunction(int n = DEF_SIZE, char s = DEF_ORDER);
 void selectionSort(int * p, int s);
+void printArray(int * p, int s);
 
 int main()
 {
@@ -153,30 +154,64 @@ void chooseFunction(int n, char s) {
 }
 
 void selectionSort(int * p, int s) {
-	cout << endl << "Selection Sort" << endl; 
+
+	int loop;
+	cout << endl << "Selection Sort" << endl;
 	cout << "---------------------- - " << endl;
-	int * array = new int[s];
-	for (int i = 1; i <= s - 1; i++) {
-		int min = p[i - 1];
-		if (min > p[i]) {
-			min = p[i];
-			array[i - 1] = min;
-			array[i] = min;
+	int min = p[0];
+	for (int j = 0; j < s - 1; j++) {
+		if (min > p[j]) {
+			min = p[j];
 		}
-		if (min > p[i] && min > array[i]) {
-			array[i - 1] = min;
-			array[i] = min;
-			if (array[i - 1] > array[i]) {
-				array[i - 1] = array[i];
-				array[i] = array[i - 1];
+	}
+	p[0] = min;
+
+	while (1) {
+		loop = 0;
+		for (int i = 1; i <= s - 1; i++) {
+			if (p[i - 1] > p[i]) {
+				int next = p[i - 1];
+				p[i - 1] = p[i];
+				p[i] = next;
+				loop = 1;
 			}
 		}
-		else {
-			array[i] = p[i];
+		if (loop == 0) {
+			break;
 		}
-		cout << "array[" << i - 1 << "] = " << array[i - 1] << endl;
+	}
+	printArray(p, s);
+}
+ 
+void printArray(int * p, int s) {
+	for (int o = 0; o < s; o++) {
+		cout << "array[" << o << "] = " << p[o] << endl;
 	}
 }
+
+//void selectionSort(int * p, int s) {
+//	cout << endl << "Selection Sort" << endl; 
+//	cout << "---------------------- - " << endl;
+// 	int * array = new int[s];
+//	for (int i = 1; i <= s - 1; i++) {
+//		int min = p[i - 1];
+//		if (min > p[i]) {
+//			min = p[i];
+//			if (min > array[i] && array[i - 1] > array[i]) {
+//				array[i - 1] = min;
+//				array[i] = min;
+//				if (array[i - 1] > array[i]) {
+//					array[i - 1] = array[i];
+//					array[i] = array[i - 1];
+//				}
+//			}
+//		}
+//		else {
+//			array[i] = p[i];
+//		}
+//		cout << "array[" << i - 1 << "] = " << array[i - 1] << endl;
+//	}
+//}
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
