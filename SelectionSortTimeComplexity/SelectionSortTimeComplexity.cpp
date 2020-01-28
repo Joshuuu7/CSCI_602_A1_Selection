@@ -24,7 +24,7 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-const int DEF_SIZE = 1000;
+const int DEF_SIZE = 10;
 const string DEF_ORDER = "R";
 
 void error();
@@ -145,12 +145,10 @@ void chooseFunction(int n, string s) {
 }
 
 void selectionSort(int * p, int s) {
-
 	int loop, replaced;
 	cout << endl << "Selection Sort" << endl;
-	cout << "---------------------- - " << endl;
+	cout << "----------------------- " << endl;
 	int min = p[0];
-
 	for (int j = 0; j < s - 1; j++) {
 		if (min > p[j]) {
 			replaced = min;
@@ -179,6 +177,8 @@ void selectionSort(int * p, int s) {
 	}
 	printArray(p, s);
 }
+
+
 
 void printArray(int * p, int s) {
 	for (int o = 0; o < s; o++) {
