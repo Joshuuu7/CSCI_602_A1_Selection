@@ -153,15 +153,60 @@ void chooseFunction(int n, char s) {
 	}
 }
 
+//void selectionSort(int * p, int s) {
+//
+//	int loop;
+//	cout << endl << "Selection Sort" << endl;
+//	cout << "---------------------- - " << endl;
+//	int min = p[0];
+//	int replaced = 0;
+//
+//	for (int j = 0; j <= s - 1; j++) {
+//		if (min > p[j]) {
+//			replaced = min;
+//			min = p[j];
+//			p[j] = replaced;
+//		}
+//	}
+//
+//	int * arr = new int[s];
+//	p[0] = min;
+//	min = p[0];
+//	loop = 0;
+//
+//	while (1) {
+//		for (int i = 1; i <= s - 1; i++) {
+//			if (min > p[i]) {
+//				int previous = min;
+//				min = p[i];
+//				p[i] = previous;
+//				loop = 1;
+//			} /*if (p[i - 1] > p[i]) {
+//				int next = p[i - 1];
+//				p[i - 1] = p[i];
+//				p[i] = next;
+//				loop;				
+//			}*/
+//		}
+//		if (loop == 0) {
+//			break;
+//		}
+//	}
+//	printArray(p, s);
+//}
+
 void selectionSort(int * p, int s) {
 
-	int loop;
+	int loop, replaced;
 	cout << endl << "Selection Sort" << endl;
 	cout << "---------------------- - " << endl;
 	int min = p[0];
+
 	for (int j = 0; j < s - 1; j++) {
 		if (min > p[j]) {
-			min = p[j];
+			replaced = min;
+		    min = p[j];
+			p[j] = replaced;
 		}
 	}
 	p[0] = min;
@@ -175,6 +220,9 @@ void selectionSort(int * p, int s) {
 				p[i] = next;
 				loop = 1;
 			}
+			if (p[i-1] == p[i]) {
+				continue;
+			}
 		}
 		if (loop == 0) {
 			break;
@@ -185,33 +233,9 @@ void selectionSort(int * p, int s) {
  
 void printArray(int * p, int s) {
 	for (int o = 0; o < s; o++) {
-		cout << "array[" << o << "] = " << p[o] << endl;
+		cout << "a[" << o << "] = " << p[o] << endl;
 	}
 }
-
-//void selectionSort(int * p, int s) {
-//	cout << endl << "Selection Sort" << endl; 
-//	cout << "---------------------- - " << endl;
-// 	int * array = new int[s];
-//	for (int i = 1; i <= s - 1; i++) {
-//		int min = p[i - 1];
-//		if (min > p[i]) {
-//			min = p[i];
-//			if (min > array[i] && array[i - 1] > array[i]) {
-//				array[i - 1] = min;
-//				array[i] = min;
-//				if (array[i - 1] > array[i]) {
-//					array[i - 1] = array[i];
-//					array[i] = array[i - 1];
-//				}
-//			}
-//		}
-//		else {
-//			array[i] = p[i];
-//		}
-//		cout << "array[" << i - 1 << "] = " << array[i - 1] << endl;
-//	}
-//}
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
