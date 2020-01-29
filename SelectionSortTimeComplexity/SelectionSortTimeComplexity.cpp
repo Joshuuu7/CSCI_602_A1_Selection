@@ -41,8 +41,14 @@ int main(int argc, char** argv)
 	string size = "";
 	int strToInt_Sz = 0;
 
+	/*Takes the arguments from the command line and determines which type of call is required.
+	Defaults to command with two arguments (the name of the executable program and the argument
+	for the algorithm). The last argument is, however, useless as the purpose of each module is 
+	to focus on one algorithm specifically. Therefore, even though "S" is selected, it will always 
+	run insertion, to avoid confusion. This is the purpose of the two separate module, as specified 
+	in the assignment.
+	*/
 	if (argc == 3) {
-
 		cin >> argv[1];
 		size = argv[1];
 		strToInt_Sz = stoi(size);
@@ -143,19 +149,18 @@ void chooseFunction(int n, string s) {
 	else {
 		random(n);
 	}
-
 }
 
 void selectionSort(int * p, int s) {
 	int loop, replaced;
 	cout << endl << "Selection Sort" << endl;
 	cout << "-----------------------" << endl;
-	
-	/* min is initially set to the array's first element. 
-	The following loop will compare min to other values 
+
+	/* min is initially set to the array's first element.
+	The following loop will compare min to other values
 	in the array, update min with the current
-	newest value, and swap both.       
-	*/           
+	newest value, and swap both.
+	*/
 	int min = p[0];
 	for (int j = 0; j < s - 1; j++) {
 		if (min > p[j]) {
@@ -166,7 +171,6 @@ void selectionSort(int * p, int s) {
 	}
 	p[0] = min;
 
-	
 	while (1) {
 		loop = 0;
 		for (int i = 1; i <= s - 1; i++) {
@@ -186,8 +190,6 @@ void selectionSort(int * p, int s) {
 	}
 	printArray(p, s);
 }
-
-
 
 void printArray(int * p, int s) {
 	for (int o = 0; o < s; o++) {
