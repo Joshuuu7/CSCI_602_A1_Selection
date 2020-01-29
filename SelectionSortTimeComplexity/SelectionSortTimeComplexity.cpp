@@ -24,7 +24,7 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-const int DEF_SIZE = 10;
+const int DEF_SIZE = 1000;
 const string DEF_ORDER = "R";
 
 void error();
@@ -113,6 +113,7 @@ void descending(int n) {
 void random(int n) {
 	int size = 0;
 
+	/* This will create an array with all random numbers.*/
 	if (n > 1) {
 		int *array = new int[n];
 		srand((unsigned)time(0));
@@ -132,6 +133,7 @@ void random(int n) {
 
 void chooseFunction(int n, string s) {
 
+	// Conditional statements to run the program depending on the provided argument for sorting order.
 	if (s.compare("A") == 0) {
 		ascending(n);
 	}
@@ -147,7 +149,13 @@ void chooseFunction(int n, string s) {
 void selectionSort(int * p, int s) {
 	int loop, replaced;
 	cout << endl << "Selection Sort" << endl;
-	cout << "----------------------- " << endl;
+	cout << "-----------------------" << endl;
+	
+	/* min is initially set to the array's first element. 
+	The following loop will compare min to other values 
+	in the array, update min with the current
+	newest value, and swap both.       
+	*/           
 	int min = p[0];
 	for (int j = 0; j < s - 1; j++) {
 		if (min > p[j]) {
@@ -158,6 +166,7 @@ void selectionSort(int * p, int s) {
 	}
 	p[0] = min;
 
+	
 	while (1) {
 		loop = 0;
 		for (int i = 1; i <= s - 1; i++) {
