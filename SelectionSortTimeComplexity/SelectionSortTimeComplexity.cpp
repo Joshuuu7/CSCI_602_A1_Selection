@@ -24,7 +24,7 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-const int DEF_SIZE = 1000;
+const int DEF_SIZE = 7;
 const string DEF_ORDER = "R";
 
 void error();
@@ -33,6 +33,7 @@ void descending(int n);
 void random(int n);
 void chooseFunction(int n = DEF_SIZE, string s = DEF_ORDER);
 void selectionSort(int * p, int s);
+int findMin(int * p, int j, int n);
 void printArray(int * p, int s);
 
 int main(int argc, char** argv)
@@ -151,8 +152,8 @@ void chooseFunction(int n, string s) {
 	}
 }
 
-void selectionSort(int * p, int s) {
-	int loop, replaced;
+void selectionSort(int * p, int n) {
+
 	cout << endl << "Selection Sort" << endl;
 	cout << "-----------------------" << endl;
 
@@ -161,34 +162,30 @@ void selectionSort(int * p, int s) {
 	in the array, update min with the current
 	newest value, and swap both.
 	*/
-	int min = p[0];
-	for (int j = 0; j < s - 1; j++) {
-		if (min > p[j]) {
-			replaced = min;
-			min = p[j];
-			p[j] = replaced;
-		}
-	}
-	p[0] = min;
 
-	while (1) {
-		loop = 0;
-		for (int i = 1; i <= s - 1; i++) {
-			if (p[i - 1] > p[i]) {
-				int next = p[i - 1];
-				p[i - 1] = p[i];
-				p[i] = next;
-				loop = 1;
-			}
-			if (p[i - 1] == p[i]) {
-				continue;
-			}
-		}
-		if (loop == 0) {
-			break;
+	int min = 0;
+	for (int i = 0; i <= n - 1; i++) {
+		int minIndex = findMin(p, i, n);
+		min = p[minIndex];
+		p[minIndex] = p[i];
+		p[i] = min;
+	}
+	printArray(p, n);
+}
+
+int findMin(int * p, int j, int n) {
+	
+	int newMin = j;
+	for (int i = j + 1; i < n; i++) {
+		if (p[i] < p[newMin]) {
+			newMin = i;
 		}
 	}
-	printArray(p, s);
+	return newMin;
+}
+
+void swap(int min, int p) {
+	
 }
 
 void printArray(int * p, int s) {
