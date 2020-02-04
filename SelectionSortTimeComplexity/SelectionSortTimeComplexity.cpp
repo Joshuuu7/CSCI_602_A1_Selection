@@ -17,137 +17,286 @@
 #include <cstdlib>
 #include <string>
 #include <ctime>
+#include <cstring>
 
 using namespace std;
 
-using std::cout;
 using std::cin;
+using std::cout;
 using std::endl;
 
-const int DEF_SIZE = 7;
-const string DEF_ORDER = "R";
+const int DEF_SIZE = 1000;
+const string LEADING_NUM_TOKEN = "N", LEADING_SORT_TOKEN = "S", LEADING_ALG_TOKEN = "G",
+DEF_ORDER = "R", DEF_ALG = "S", DELIMITER = "=", ALGORITHM_TYPE = "selection";
 
-void error();
+bool checkLeadingTokens(string n, string s, string g);
+string getLeadingToken(string str);
+string getToken(string str);
+bool is_number(const string &s);
+void checkSelectArg(int strToInt_Sz, string sortToken, string selAlg);
+void error(string message);
 void ascending(int n);
 void descending(int n);
 void random(int n);
-void chooseFunction(int n = DEF_SIZE, string s = DEF_ORDER);
-void selectionSort(int * p, int s);
+void chooseSortOrder(int n = DEF_SIZE, string s = DEF_ORDER);
+void selectionSort(int *p, int s);
 int findMin(int * p, int j, int n);
-void printArray(int * p, int s);
+void printArray(int *p, int s);
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-	string order;
-	string size = "";
+	string leading_num = "", leading_sort = "", leading_alg = "",
+		number = "", sort = "", selAlg = "",
+		numberToken = "", sortToken = "", selAlgToken = "",
+		firstArg = "", firstArgToken = "";
 	int strToInt_Sz = 0;
+	bool leading_Tokens = false, is_num = false;
 
 	/*Takes the arguments from the command line and determines which type of call is required.
 	Defaults to command with two arguments (the name of the executable program and the argument
-	for the algorithm). The last argument is, however, useless as the purpose of each module is 
-	to focus on one algorithm specifically. Therefore, even though "S" is selected, it will always 
-	run insertion, to avoid confusion. This is the purpose of the two separate module, as specified 
+	for the algorithm). The last argument is, however, useless as the purpose of each module is
+	to focus on one algorithm specifically. Therefore, even though "I" is selected, it will always
+	run selection, to avoid confusion. This is the purpose of the two separate module, as specified
 	in the assignment.
 	*/
-	if (argc == 3) {
-		cin >> argv[1];
-		size = argv[1];
-		strToInt_Sz = stoi(size);
-		cin >> argv[2];
-		order = *argv[2];
-		chooseFunction(strToInt_Sz, order);
+
+	if (argc == 4)
+	{
+		leading_num = getLeadingToken(argv[1]);
+		leading_sort = getLeadingToken(argv[2]);
+		leading_alg = getLeadingToken(argv[3]);
+		leading_Tokens = checkLeadingTokens(leading_num, leading_sort, leading_alg);
+		if (leading_Tokens == true)
+		{
+			firstArg = argv[1];
+			firstArgToken = getToken(firstArg);
+			is_num = is_number(firstArgToken);
+			if (is_num)
+			{
+				number = argv[1];
+				numberToken = getToken(number);
+				strToInt_Sz = stoi(numberToken);
+				if (strToInt_Sz > 1)
+				{
+					sort = argv[2];
+					selAlg = argv[3];
+					sortToken = getToken(sort);
+					selAlgToken = getToken(selAlg);
+					checkSelectArg(strToInt_Sz, sortToken, selAlgToken);
+				}
+				else
+				{
+					error("Number must be positive!");
+				}
+			}
+		}
 	}
-	else if (argc == 2) {
-		cin >> argv[1];
-		if ((int)*argv[1]) {
-			size = argv[1];
-			strToInt_Sz = stoi(size);
-			chooseFunction(strToInt_Sz, DEF_ORDER);
+	else if (argc == 3) {
+		firstArg = argv[1];
+		firstArgToken = getToken(firstArg);
+		is_num = is_number(firstArgToken);
+		if (is_num) {
+			leading_num = getLeadingToken(argv[1]), leading_alg = getLeadingToken(argv[2]);
+			leading_Tokens = checkLeadingTokens(leading_num, LEADING_SORT_TOKEN, leading_alg);
+			if (leading_Tokens == true)
+			{
+				strToInt_Sz = stoi(firstArgToken);
+				if (strToInt_Sz > 1)
+				{
+					selAlg = argv[2];
+					selAlgToken = getToken(selAlg);
+					checkSelectArg(strToInt_Sz, DEF_ORDER, selAlgToken);
+				}
+			}
 		}
 		else {
-			order = argv[1];
-			cout << endl;
-			chooseFunction(DEF_SIZE, order);
+			leading_sort = getLeadingToken(argv[1]), leading_alg = getLeadingToken(argv[2]);
+			leading_Tokens = checkLeadingTokens(LEADING_NUM_TOKEN, leading_sort, leading_alg);
+			if (leading_Tokens == true) {
+				sort = argv[1];
+				sortToken = getToken(sort);
+				selAlg = argv[2];
+				selAlgToken = getToken(selAlg);
+				checkSelectArg(DEF_SIZE, sortToken, selAlgToken);
+			}
 		}
 	}
-	else {
-		chooseFunction(DEF_SIZE, DEF_ORDER);
+	else if (argc == 2)
+	{
+		leading_alg = getLeadingToken(argv[1]);
+		leading_Tokens = checkLeadingTokens(LEADING_NUM_TOKEN, LEADING_SORT_TOKEN, leading_alg);
+		if (leading_Tokens == true)
+		{
+			selAlg = argv[1];
+			selAlgToken = getToken(selAlg);
+			checkSelectArg(DEF_SIZE, DEF_ORDER, selAlgToken);
+		}
+	}
+	else
+	{
+		error("The argument G=" + DEF_ALG + " is mandatory.");
 	}
 }
 
-void error() {
-	cout << "ERROR: Please enter a positive number!" << endl;
+bool checkLeadingTokens(string n, string s, string g)
+{
+	if (n.compare(LEADING_NUM_TOKEN) != 0)
+	{
+		error("The first leading parameter token must be '" + LEADING_NUM_TOKEN + "'. Enter the valid leading parameters (N S G) in that order.");
+		return false;
+	}
+	if (s.compare(LEADING_SORT_TOKEN) != 0)
+	{
+		error("The second leading parameter token must be '" + LEADING_SORT_TOKEN + "'. Enter the valid leading parameters (N S G) in that order.");
+		return false;
+	}
+	if (g.compare(LEADING_ALG_TOKEN) != 0)
+	{
+		error("The third leading parameter token must be '" + LEADING_ALG_TOKEN + "'. Enter the valid leading parameters (N S G) in that order.");
+		return false;
+	}
+	return true;
 }
 
-void ascending(int n) {
+string getLeadingToken(string str)
+{
+	string leadingToken = str.substr(0, str.find(DELIMITER));
+	return leadingToken;
+}
+
+string getToken(string str)
+{
+	string token = str.substr(str.find(DELIMITER) + 1);
+	return token;
+}
+
+bool is_number(const string &s)
+{
+	return (strspn(s.c_str(), "0123456789") == s.size());
+}
+
+void checkSelectArg(int strToInt_Sz, string sortToken, string selAlg)
+{
+	string selAlgToken = getToken(selAlg);
+	if (selAlgToken.compare(DEF_ALG) == 0)
+	{
+		chooseSortOrder(strToInt_Sz, sortToken);
+	}
+	else
+	{
+		error("This is module supports " + ALGORITHM_TYPE + " sorting only! Provide argument G=" + DEF_ALG + ".");
+	}
+}
+
+void error(string message = "Enter a positive number!")
+{
+	cerr << "ERROR: " + message << endl;
+}
+
+void ascending(int n)
+{
+
+	cout << endl;
+	cout << "Command [N=" << n << "] [S=A] "
+		<< "G=" << DEF_ALG << " executed." << endl
+		<< endl;
 	int size = 0;
-
-	if (n > 1) {
+	if (n > 1)
+	{
 		int *array = new int[n];
-		for (int j = 0; j <= n - 1; j++) {
+		for (int j = 0; j <= n - 1; j++)
+		{
 			array[j] = j;
-			cout << "a[" << j << "] = " << array[j] << endl;
 			size = j + 1;
-
 		}
+		printArray(array, n);
 		cout << "Array Size: " << size << endl;
 		selectionSort(array, size);
 	}
-	else {
+	else
+	{
 		error();
 	}
 }
 
-void descending(int n) {
-	int size = 0;
+void descending(int n)
+{
 
-	if (n > 1) {
+	cout << endl;
+	cout << "Command [N=" << n << "] [S=D] "
+		<< "G=" << DEF_ALG << " executed." << endl
+		<< endl;
+	int size = 0;
+	if (n > 1)
+	{
 		int *array = new int[n];
-		for (int j = 0; n - 1 >= 0; j++) {
+		for (int j = 0; n - 1 >= 0; j++)
+		{
 			n--;
 			array[j] = n;
-			cout << "a[" << j << "] = " << array[j] << endl;
 			size = j + 1;
 		}
+		printArray(array, size);
 		cout << "Array Size: " << size << endl;
 		selectionSort(array, size);
 	}
-	else {
+	else
+	{
 		error();
 	}
 }
 
-void random(int n) {
-	int size = 0;
+void random(int n)
+{
 
+	cout << endl;
+	cout << "Command [N=" << n << "] [S=R] "
+		<< "G=" << DEF_ALG << " executed." << endl
+		<< endl;
+	int size = 0;
 	/* This will create an array with all random numbers.*/
-	if (n > 1) {
+	if (n > 1)
+	{
 		int *array = new int[n];
 		srand((unsigned)time(0));
-		for (int j = 0; n - 1 >= 0; j++) {
+		for (int j = 0; n - 1 >= 0; j++)
+		{
 			n--;
 			array[j] = (rand() % 1000) + 1;
-			cout << "a[" << j << "] = " << array[j] << endl;
 			size = j + 1;
 		}
+		printArray(array, size);
 		cout << "Array Size: " << size << endl;
 		selectionSort(array, size);
 	}
-	else {
+	else
+	{
 		error();
 	}
 }
 
-void chooseFunction(int n, string s) {
+void chooseSortOrder(int n, string s)
+{
 
 	// Conditional statements to run the program depending on the provided argument for sorting order.
-	if (s.compare("A") == 0) {
+	if (s.compare("A") == 0)
+	{
 		ascending(n);
 	}
-	else if (s.compare("D") == 0) {
+	else if (s.compare("D") == 0)
+	{
 		descending(n);
 	}
-	else {
+	else if (s.compare("R") == 0)
+	{
+		random(n);
+	}
+	else if (s.compare("A") != 0 || s.compare("D") != 0 || s.compare("R") != 0)
+	{
+		error("Provide only valid optional parameters (S=A, S=D, or S=R) /n or leave the optional field blank for the defualt random sorting.");
+	}
+	else
+	{
 		random(n);
 	}
 }
@@ -174,7 +323,7 @@ void selectionSort(int * p, int n) {
 }
 
 int findMin(int * p, int j, int n) {
-	
+
 	int newMin = j;
 	for (int i = j + 1; i < n; i++) {
 		if (p[i] < p[newMin]) {
@@ -184,13 +333,10 @@ int findMin(int * p, int j, int n) {
 	return newMin;
 }
 
-void swap(int min, int p) {
-	
-}
-
-void printArray(int * p, int s) {
-	for (int o = 0; o < s; o++) {
-		cout << "a[" << o << "] = " << p[o] << endl;
+void printArray(int *p, int s)
+{
+	for (int o = 0; o < s; o++)
+	{
+		cout << "A[" << o << "] = " << p[o] << endl;
 	}
 }
-
